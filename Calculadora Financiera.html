@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Financiamiento</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: white;
+  padding: 20px;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  background: rgba(30,41,59,0.7);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+label {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin: 6px 0 14px 0;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  background: #020617;
+  color: white;
+  font-size: 15px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #22c55e;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background: #22c55e;
+  color: black;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #16a34a;
+}
+
+.result {
+  margin-top: 20px;
+  background: #020617;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  line-height: 1.6;
+}
+
+.result span {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.highlight {
+  color: #22c55e;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>💰 Calculadora</h2>
+
+<label>Precio total</label>
+<input type="number" id="precio">
+
+<label>Inicial</label>
+<input type="number" id="inicial">
+
+<label>Adicional (15 días)</label>
+<input type="number" id="adicional">
+
+<label>Plazo (meses)</label>
+<input type="number" id="plazo">
+
+<label>Interés % mensual</label>
+<input type="number" id="interes">
+
+<button onclick="calcular()">Calcular financiamiento</button>
+
+<div class="result" id="resultado"></div>
+
+</div>
+
+<script>
+function formatMoney(num){
+  return num.toLocaleString('es-DO', {minimumFractionDigits: 2});
+}
+
+function calcular() {
+
+let precio = parseFloat(document.getElementById("precio").value) || 0;
+let inicial = parseFloat(document.getElementById("inicial").value) || 0;
+let adicional = parseFloat(document.getElementById("adicional").value) || 0;
+let plazo = parseFloat(document.getElementById("plazo").value) || 1;
+let interes = parseFloat(document.getElementById("interes").value) || 0;
+
+// Validación básica
+if(precio <= 0 || plazo <= 0){
+  document.getElementById("resultado").innerHTML = "⚠️ Completa los campos correctamente";
+  return;
+}
+
+// Capital financiado
+let capital = precio - inicial - adicional;
+
+// Interés fijo mensual
+let interesMensual = capital * (interes / 100);
+
+// Cuota base
+let cuotaBase = capital / plazo;
+
+// Cuota final
+let cuotaFinal = cuotaBase + interesMensual;
+
+// Total pagado
+let totalPagado = (cuotaFinal * plazo) + inicial + adicional;
+
+document.getElementById("resultado").innerHTML = `
+<span>Capital financiado: <b>RD$ ${formatMoney(capital)}</b></span>
+<span>Interés mensual: <b>RD$ ${formatMoney(interesMensual)}</b></span>
+<span class="highlight">Cuota mensual: RD$ ${formatMoney(cuotaFinal)}</span>
+<span>Total pagado: <b>RD$ ${formatMoney(totalPagado)}</b></span>
+`;
+
+}
+</script>
+
+</body>
+</html>
